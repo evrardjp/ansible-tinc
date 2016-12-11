@@ -1,38 +1,70 @@
-Role Name
-=========
+Tinc
+====
 
-A brief description of the role goes here.
+[![Build Status](https://travis-ci.org/evrardjp/ansible-tinc.svg?branch=master)](https://travis-ci.org/evrardjp/ansible-tinc)
+
+This role installs tinc in a star or a ring topology.
+
+The nodes part of the group tinc_node is a full list of nodes to apply/install the role.
+
+The nodes part of the tinc_spine_nodes are the "core" nodes, where all the nodes connect.
+If all the tinc_nodes are part of the tinc_spine_nodes, you have a more "ringy" topology.
+If you have one node in tinc_spine_nodes, you have a more "starry" topology.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+* Ubuntu 16.04 /  CentOS 7 (or above)
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+* tinc_key_size: The size of the generated keys (Default 4096)
+* tinc_address_family can be ipv4/ipv6/any (or undefined)
+* tinc_mode can be router, switch, or hub. (See https://www.tinc-vpn.org/documentation/tinc.conf.5). Default: Router
+* tinc_netname: The tinc network name
+* tinc_vpn_cidr: The cidr used in tinc. 
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+    - hosts: tinc_nodes
       roles:
-         - { role: username.rolename, x: 42 }
+         - evrardjp.tinc
+
+For this playbook to work, you should include your topology somewhere.
+Here is an example of my group_vars/ and inventory/
+
+Group vars:
+
+    tinc_netname: mynetname
+    tinc_mode: switch
+    tinc_vpn_cidr: "/24"
+
+Inventory:
+
+```
+
+[tinc_nodes]
+node1
+node2
+
+[tinc_spine_nodes]
+node1
+```
+
 
 License
 -------
 
-BSD
+Apache2
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Jean-Philippe Evrard <jean-philippe at evrard dot me>
