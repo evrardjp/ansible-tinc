@@ -1,0 +1,40 @@
+---
+# tasks file for tinc
+- name: install epel-release
+  yum:
+    name: epel-release
+    state: latest
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
+  tags:
+    - tinc_requirements
+    - install
+
+- name: refresh cache
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "debian"
+  tags:
+    - tinc_requirements
+    - install
+
+- name: install tinc
+  package:
+    name: tinc
+    state: latest
+  tags:
+    - tinc_install
+    - install
+
+- name: create tinc systemd service file
+  template:
+    src: tinc.systemd.service.j2
+    dest: /etc/systemd/system/tinc.service
+  notify: Restart Service
+  tags:
+    - tinc_install
+    - install
+
+- include: tinc_configure.yml
+  tags:
+    - tinc_configure
+    - configure

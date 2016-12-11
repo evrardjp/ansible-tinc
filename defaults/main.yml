@@ -1,0 +1,11 @@
+---
+# defaults file for tinc
+
+service_name: "{{ tinc_service_name }}"
+tinc_service_name: tinc
+tinc_key_size: 4096
+# tinc_address_family can be ipv4/ipv6/any (or undefined)
+#tinc_address_family: ipv4
+# tinc_mode can be router, switch, or hub.
+# See https://www.tinc-vpn.org/documentation/tinc.conf.5.
+tinc_mode: router

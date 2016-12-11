@@ -1,0 +1,7 @@
+#!/bin/sh
+ip link set dev {{ tinc_vpn_interface }} up
+ip addr add {{ tinc_vpn_ip }}{{ tinc_vpn_cidr }} dev {{ tinc_vpn_interface }}
+
+{% if tinc_up_scripts is defined %}
+{{ tinc_up_scripts }}
+{% endif %}
