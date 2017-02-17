@@ -37,7 +37,7 @@
 
 - name: ensure tinc hosts file binds to physical ip address
   lineinfile:
-    dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') }}"
+    dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     line: "Address = {{ tinc_control_plane_bind_ip }}"
     create: yes
   when: inventory_hostname in groups['tinc_spine_nodes']
@@ -46,7 +46,7 @@
 
 - name: ensure subnet ip address is properly set in tinc host file
   lineinfile:
-    dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') }}"
+    dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     line: "Subnet = {{ tinc_vpn_ip }}/32"
     create: yes
   when: tinc_mode == 'router'
@@ -54,7 +54,7 @@
     - Restart service
 
 - name: check whether /etc/tinc/netname/hosts/inventory_hostname contains "-----END RSA PUBLIC KEY-----"
-  command: awk '/^-----END RSA PUBLIC KEY-----$/'  /etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') }}
+  command: awk '/^-----END RSA PUBLIC KEY-----$/'  /etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}
   changed_when: "public_key.stdout != '-----END RSA PUBLIC KEY-----'"
   register: public_key
 
@@ -74,8 +74,8 @@
 
 - name: fetch tinc hosts file after key creation
   fetch:
-    src: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') }}"
-    dest: "fetch/{{ inventory_hostname | replace('.','_') }}"
+    src: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
+    dest: "fetch/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     flat: yes
 
 - name: sync the fetched tinc hosts files on each host
