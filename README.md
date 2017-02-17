@@ -23,7 +23,7 @@ Role Variables
 * tinc_address_family can be ipv4/ipv6/any (or undefined)
 * tinc_mode can be router, switch, or hub. (See https://www.tinc-vpn.org/documentation/tinc.conf.5). Default: Router
 * tinc_netname: The tinc network name
-* tinc_vpn_cidr: The cidr used in tinc. 
+* tinc_vpn_cidr: The cidr used in tinc.
 
 Dependencies
 ------------
@@ -45,6 +45,7 @@ Group vars:
     tinc_netname: mynetname
     tinc_mode: switch
     tinc_vpn_cidr: "/24"
+    tinc_vpn_interface: tun0
 
 Inventory:
 
