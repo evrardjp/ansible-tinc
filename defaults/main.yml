@@ -9,3 +9,4 @@ tinc_key_size: 4096
 # tinc_mode can be router, switch, or hub.
 # See https://www.tinc-vpn.org/documentation/tinc.conf.5.
 tinc_mode: router
+tinc_vpn_interface: tun0

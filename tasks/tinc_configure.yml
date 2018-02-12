@@ -10,14 +10,14 @@
     content: "{{ tinc_netname }}"
     dest: /etc/tinc/nets.boot
   notify:
-    - Restart service
+    - Restart Service
 
 - name: ensure tinc.conf contains connection to core nodes
   template:
     src: tinc.conf.j2
     dest: "/etc/tinc/{{ tinc_netname }}/tinc.conf"
   notify:
-    - Restart service
+    - Restart Service
 
 - name: create tinc-up file
   template:
@@ -25,7 +25,7 @@
     dest: "/etc/tinc/{{ tinc_netname }}/tinc-up"
     mode: 0755
   notify:
-    - Restart service
+    - Restart Service
 
 - name: create tinc-down file
   template:
@@ -33,28 +33,28 @@
     dest: "/etc/tinc/{{ tinc_netname }}/tinc-down"
     mode: 0755
   notify:
-    - Restart service
+    - Restart Service
 
 - name: ensure tinc hosts file binds to physical ip address
   lineinfile:
-    dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') }}"
+    dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     line: "Address = {{ tinc_control_plane_bind_ip }}"
     create: yes
   when: inventory_hostname in groups['tinc_spine_nodes']
   notify:
-    - Restart service
+    - Restart Service
 
 - name: ensure subnet ip address is properly set in tinc host file
   lineinfile:
-    dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') }}"
+    dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     line: "Subnet = {{ tinc_vpn_ip }}/32"
     create: yes
   when: tinc_mode == 'router'
   notify:
-    - Restart service
+    - Restart Service
 
 - name: check whether /etc/tinc/netname/hosts/inventory_hostname contains "-----END RSA PUBLIC KEY-----"
-  command: awk '/^-----END RSA PUBLIC KEY-----$/'  /etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') }}
+  command: awk '/^-----END RSA PUBLIC KEY-----$/'  /etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}
   changed_when: "public_key.stdout != '-----END RSA PUBLIC KEY-----'"
   register: public_key
 
@@ -70,12 +70,12 @@
   args:
     creates: "/etc/tinc/{{ tinc_netname }}/rsa_key.priv"
   notify:
-    - Restart service
+    - Restart Service
 
 - name: fetch tinc hosts file after key creation
   fetch:
-    src: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') }}"
-    dest: "fetch/{{ inventory_hostname | replace('.','_') }}"
+    src: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
+    dest: "fetch/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     flat: yes
 
 - name: sync the fetched tinc hosts files on each host
@@ -83,7 +83,7 @@
     src: fetch/
     dest: "/etc/tinc/{{ tinc_netname }}/hosts/"
   notify:
-    - Restart service
+    - Restart Service
 
 - name: add nodes to /etc/hosts (ansible_inventory resolves to vpn_ip)
   lineinfile:
