@@ -2,7 +2,7 @@
 # handlers file for tinc
 
 - name: Restart Service
-  systemd:
-    daemon_reload: yes
-    state: restarted
+  service:
     name: "{{ service_name }}"
+    daemon_reload: "{{ ansible_service_mgr == 'systemd' | ternary('yes',omit) }}"
+    state: restarted

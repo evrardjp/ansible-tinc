@@ -5,25 +5,30 @@ Tinc
 
 This role installs tinc in a star or a ring topology.
 
-The nodes part of the group tinc_node is a full list of nodes to apply/install the role.
+The nodes listed in the group [tinc_nodes] is a full list of nodes to apply/install the role.
 
-The nodes part of the tinc_spine_nodes are the "core" nodes, where all the nodes connect.
-If all the tinc_nodes are part of the tinc_spine_nodes, you have a more "ringy" topology.
-If you have one node in tinc_spine_nodes, you have a more "starry" topology.
+The nodes part of [tinc_spine_nodes] are the "core" nodes, where all the nodes connect.
+
+The nodes in [tinc_leaf_nodes] connect only to the spine nodes.  Devices behind a NAT would be an example of such.
+
+If all the [tinc_nodes] are part of the [tinc_spine_nodes], you have a more "ringy" topology. If you have one node in [tinc_spine_nodes], you have a more "starry" topology.
 
 Requirements
 ------------
 
-* Ubuntu 16.04 /  CentOS 7 (or above)
+* Ubuntu 16.04 / CentOS 7 (or above) / OpenWRT
 
 Role Variables
 --------------
 
-* tinc_key_size: The size of the generated keys (Default 4096)
+* tinc_key_size: The size of the generated keys (Default: 4096)
 * tinc_address_family can be ipv4/ipv6/any (or undefined)
-* tinc_mode can be router, switch, or hub. (See https://www.tinc-vpn.org/documentation/tinc.conf.5). Default: Router
+* tinc_mode can be router, switch, or hub. (See https://www.tinc-vpn.org/documentation/tinc.conf.5). (Default: router)
 * tinc_netname: The tinc network name
-* tinc_vpn_cidr: The cidr used in tinc.
+* tinc_vpn_ip: The ip/subnet to assign to a host using host_vars
+* tinc_vpn_cidr: The cidr used in tinc (Default: /24, or force /32 in router mode).
+* tinc_vpn_interface: The device for tinc to use (Default: tun0)
+* tinc_control_plane_bind_ip: The ip for tinc to bind to (Example: {{ ansible_host }} )
 
 Inventory should have an extra tinc_control_plane_bind_ip or tinc_vpn_ip,
 depending on the modes. Please have a look in the task files.
@@ -53,6 +58,11 @@ Group vars:
     tinc_mode: switch
     tinc_vpn_cidr: "/24"
     tinc_vpn_interface: tun0
+    tinc_control_plane_bind_ip: "{{ ansible_host }}"
+
+Host vars:
+
+    tinc_vpn_ip: 10.10.0.1
 
 Inventory:
 

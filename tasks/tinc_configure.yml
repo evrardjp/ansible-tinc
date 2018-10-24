@@ -18,6 +18,7 @@
     dest: "/etc/tinc/{{ tinc_netname }}/tinc.conf"
   notify:
     - Restart Service
+  tags: connection
 
 - name: create tinc-up file
   template:
@@ -38,6 +39,7 @@
 - name: ensure tinc hosts file binds to physical ip address
   lineinfile:
     dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
+    regexp: "^Address ="
     line: "Address = {{ tinc_control_plane_bind_ip }}"
     create: yes
   when: inventory_hostname in groups['tinc_spine_nodes']
@@ -47,6 +49,7 @@
 - name: ensure subnet ip address is properly set in tinc host file
   lineinfile:
     dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
+    regexp: "^Subnet ="
     line: "Subnet = {{ tinc_vpn_ip }}/32"
     create: yes
   when: tinc_mode == 'router'
@@ -78,10 +81,29 @@
     dest: "fetch/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     flat: yes
 
+# Note: Currently the synchronize module requires passwordless sudo
 - name: sync the fetched tinc hosts files on each host
   synchronize:
     src: fetch/
     dest: "/etc/tinc/{{ tinc_netname }}/hosts/"
+    use_ssh_args: yes
+  when: ansible_os_family != "OpenWrt"
+  tags: sync
+  notify:
+    - Restart Service
+
+- name: OpenWRT sync the fetched tinc hosts files on each host
+  synchronize:
+    src: fetch/
+    dest: "/etc/tinc/{{ tinc_netname }}/hosts/"
+    use_ssh_args: yes
+    # By default rsync_path is 'sudo rsync' OpenWRT typically does not have sudo
+    rsync_path: rsync
+    # rsync on OpenWRT lacks old-style --compress due to its external zlib
+    rsync_opts:
+      - "-zz"
+  tags: sync
+  when: ansible_os_family == "OpenWrt"
   notify:
     - Restart Service
 
@@ -100,6 +122,6 @@
 - meta: flush_handlers
 
 - name: ensure tinc is enabled
-  systemd:
+  service:
     name: "{{ tinc_service_name }}"
     enabled: yes
