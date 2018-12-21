@@ -25,6 +25,13 @@ Role Variables
 * tinc_netname: The tinc network name
 * tinc_vpn_cidr: The cidr used in tinc.
 
+Inventory should have an extra tinc_control_plane_bind_ip or tinc_vpn_ip,
+depending on the modes. Please have a look in the task files.
+
+For example, the tinc_control_plane_bind_ip could be set to
+`{{ ansible_host }}` or something like {{ ansible_eth0.ipv4.address }}.
+Please have a look at your ansible facts and define them appropriately.
+
 Dependencies
 ------------
 
