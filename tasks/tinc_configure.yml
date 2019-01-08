@@ -99,9 +99,11 @@
     use_ssh_args: yes
     # By default rsync_path is 'sudo rsync' OpenWRT typically does not have sudo
     rsync_path: rsync
-    # rsync on OpenWRT lacks old-style --compress due to its external zlib
     rsync_opts:
+      # rsync on OpenWRT lacks old-style --compress due to its external zlib
       - "-zz"
+      # we are not using sudo so ensure the files end up being owned by root
+      - "--chown=root:root"
   tags: sync
   when: ansible_os_family == "OpenWrt"
   notify:
