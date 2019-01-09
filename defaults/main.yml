@@ -3,6 +3,8 @@
 
 service_name: "{{ tinc_service_name }}"
 tinc_service_name: tinc
+# OpenWRT package manager does not support state: latest
+tinc_package_state: present
 tinc_key_size: 4096
 # tinc_address_family can be ipv4/ipv6/any (or undefined)
 #tinc_address_family: ipv4
@@ -10,3 +12,5 @@ tinc_key_size: 4096
 # See https://www.tinc-vpn.org/documentation/tinc.conf.5.
 tinc_mode: router
 tinc_vpn_interface: tun0
+# tinc_vpn_cidr is set to /32 when tinc_mode: router - this will be overridden
+tinc_vpn_cidr: "/24"

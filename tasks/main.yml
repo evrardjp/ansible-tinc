@@ -20,7 +20,7 @@
 - name: install tinc
   package:
     name: tinc
-    state: latest
+    state: "{{ tinc_package_state }}"
   tags:
     - tinc_install
     - install
@@ -30,9 +30,23 @@
     src: tinc.systemd.service.j2
     dest: /etc/systemd/system/tinc.service
   notify: Restart Service
+  when: ansible_service_mgr == "systemd"
   tags:
     - tinc_install
     - install
+
+- name: OpenWRT Configure tinc with UCI
+  template:
+    src: openwrt-tinc-uci-config.j2
+    dest: /etc/config/tinc
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_os_family == "OpenWrt"
+  tags:
+    - uci
+  notify:
+    - Restart Service
 
 - include: tinc_configure.yml
   tags:
