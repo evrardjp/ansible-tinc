@@ -1,0 +1,9 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Ping other nodes over VPN
+    command: "ping -c 1 {{ item }}"
+    with_items: "{{ play_hosts }}"

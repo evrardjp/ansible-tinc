@@ -1,0 +1,32 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+
+  - name: Debian - apt update, install rsync and ping
+    when: ansible_os_family == "Debian"
+    apt:
+      update_cache: yes
+      name:
+        - rsync
+        - inetutils-ping
+      state: present
+
+  - name: CentOS 7 - get iproute to fix undefined ansible_default_ipv4.address
+    yum:
+      name: iproute
+      state: present
+    when:
+      - ansible_distribution == "CentOS"
+      - ansible_distribution_major_version == "7"
+
+  - name: CentOS 7 - re-collect network facts
+    setup:
+      gather_subset: network
+    when:
+      - ansible_distribution == "CentOS"
+      - ansible_distribution_major_version == "7"
+
+  - name: Include ansible-tinc
+    include_role:
+      name: ansible-tinc

@@ -10,14 +10,16 @@
     content: "{{ tinc_netname }}"
     dest: /etc/tinc/nets.boot
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
 
 - name: ensure tinc.conf contains connection to core nodes
   template:
     src: tinc.conf.j2
     dest: "/etc/tinc/{{ tinc_netname }}/tinc.conf"
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
   tags: connection
 
 - name: create tinc-up file
@@ -26,7 +28,8 @@
     dest: "/etc/tinc/{{ tinc_netname }}/tinc-up"
     mode: 0755
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
 
 - name: create tinc-down file
   template:
@@ -34,7 +37,8 @@
     dest: "/etc/tinc/{{ tinc_netname }}/tinc-down"
     mode: 0755
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
 
 - name: ensure tinc hosts file binds to physical ip address
   lineinfile:
@@ -44,7 +48,8 @@
     create: yes
   when: inventory_hostname in groups['tinc_spine_nodes']
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
 
 - name: ensure subnet ip address is properly set in tinc host file
   lineinfile:
@@ -54,7 +59,8 @@
     create: yes
   when: tinc_mode == 'router'
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
 
 - name: check whether /etc/tinc/netname/hosts/inventory_hostname contains "-----END RSA PUBLIC KEY-----"
   command: awk '/^-----END RSA PUBLIC KEY-----$/'  /etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}
@@ -73,7 +79,8 @@
   args:
     creates: "/etc/tinc/{{ tinc_netname }}/rsa_key.priv"
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
 
 - name: fetch tinc hosts file after key creation
   fetch:
@@ -92,7 +99,8 @@
   when: ansible_os_family != "OpenWrt"
   tags: sync
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
 
 - name: OpenWRT sync the fetched tinc hosts files on each host
   synchronize:
@@ -108,7 +116,8 @@
   tags: sync
   when: ansible_os_family == "OpenWrt"
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
 
 - name: add nodes to /etc/hosts (ansible_inventory resolves to vpn_ip)
   lineinfile:
@@ -120,11 +129,4 @@
   with_items: "{{ play_hosts }}"
   tags:
     - tinc_internal_hosts
-
-# Ensure the systemd daemon is reloaded and the service is restarted
-- meta: flush_handlers
-
-- name: ensure tinc is enabled
-  service:
-    name: "{{ tinc_service_name }}"
-    enabled: yes
+    - molecule-notest # https://github.com/ansible-community/molecule/issues/959

@@ -29,7 +29,10 @@
   template:
     src: tinc.systemd.service.j2
     dest: /etc/systemd/system/tinc.service
-  notify: Restart Service
+  notify:
+    - restart service
+    - restart service with systemd
+
   when: ansible_service_mgr == "systemd"
   tags:
     - tinc_install
@@ -46,7 +49,8 @@
   tags:
     - uci
   notify:
-    - Restart Service
+    - restart service
+    - restart service with systemd
 
 - include: tinc_configure.yml
   tags:
