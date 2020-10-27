@@ -1,0 +1,97 @@
+---
+scenario:
+  name: default # ring topology
+dependency:
+  name: galaxy
+driver:
+  name: docker
+verifier:
+  name: ansible
+provisioner:
+  name: ansible
+  log: false
+  inventory:
+    host_vars:
+      tinc-centos-7:
+        tinc_vpn_ip: 10.10.0.11
+      tinc-centos-8:
+        tinc_vpn_ip: 10.10.0.12
+      tinc-ubuntu-16:
+        tinc_vpn_ip: 10.10.0.13
+      tinc-ubuntu-18:
+        tinc_vpn_ip: 10.10.0.14
+      tinc-ubuntu-20:
+        tinc_vpn_ip: 10.10.0.15
+platforms:
+  - name: tinc-centos-7
+    image: docker.io/pycontribs/centos:7
+    pre_build_image: true
+    privileged: true
+    command: /sbin/init
+    etc_hosts:
+      tinc-centos-7:  10.10.0.11
+      tinc-centos-8:  10.10.0.12
+      tinc-ubuntu-16: 10.10.0.13
+      tinc-ubuntu-18: 10.10.0.14
+      tinc-ubuntu-20: 10.10.0.15
+    groups:
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes
+  - name: tinc-centos-8
+    image: docker.io/pycontribs/centos:8
+    pre_build_image: true
+    privileged: true
+    command: /sbin/init
+    etc_hosts:
+      tinc-centos-7:  10.10.0.11
+      tinc-centos-8:  10.10.0.12
+      tinc-ubuntu-16: 10.10.0.13
+      tinc-ubuntu-18: 10.10.0.14
+      tinc-ubuntu-20: 10.10.0.15
+    groups:
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes
+  - name: tinc-ubuntu-16
+    image: diodonfrost/ubuntu-16.04-ansible
+    pre_build_image: true
+    privileged: true
+    etc_hosts:
+      tinc-centos-7:  10.10.0.11
+      tinc-centos-8:  10.10.0.12
+      tinc-ubuntu-16: 10.10.0.13
+      tinc-ubuntu-18: 10.10.0.14
+      tinc-ubuntu-20: 10.10.0.15
+    groups:
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes
+  - name: tinc-ubuntu-18
+    image: diodonfrost/ubuntu-18.04-ansible
+    pre_build_image: true
+    privileged: true
+    etc_hosts:
+      tinc-centos-7:  10.10.0.11
+      tinc-centos-8:  10.10.0.12
+      tinc-ubuntu-16: 10.10.0.13
+      tinc-ubuntu-18: 10.10.0.14
+      tinc-ubuntu-20: 10.10.0.15
+    groups:
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes
+  - name: tinc-ubuntu-20
+    image: diodonfrost/ubuntu-20.04-ansible
+    pre_build_image: true
+    privileged: true
+    etc_hosts:
+      tinc-centos-7:  10.10.0.11
+      tinc-centos-8:  10.10.0.12
+      tinc-ubuntu-16: 10.10.0.13
+      tinc-ubuntu-18: 10.10.0.14
+      tinc-ubuntu-20: 10.10.0.15
+    groups:
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes
