@@ -120,6 +120,7 @@
   with_items: "{{ play_hosts }}"
   tags:
     - tinc_internal_hosts
+    - molecule-notest # https://github.com/ansible-community/molecule/issues/959
 
 # Ensure the systemd daemon is reloaded and the service is restarted
 - meta: flush_handlers

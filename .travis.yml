@@ -1,30 +1,15 @@
 ---
+os: linux
+dist: focal
 language: python
-python: "2.7"
-
-# Use the new container infrastructure
-sudo: required
-dist: trusty
-
-# Install ansible
-addons:
-  apt:
-    packages:
-    - python-pip
-
+python: 3.8
+services:
+  - docker
 install:
-  # Install ansible
-  - pip install ansible
-
-  # Check ansible version
-  - ansible --version
-
-  # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
-
+  - python3 -m pip install molecule
+  - python3 -m pip install molecule-docker
+  - python3 -m pip install ansible
 script:
-  # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
-
-notifications:
-  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  - molecule --version
+  - molecule test # default scenario with ring topology
+  - molecule test -s star

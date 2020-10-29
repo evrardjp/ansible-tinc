@@ -14,3 +14,5 @@ tinc_mode: router
 tinc_vpn_interface: tun0
 # tinc_vpn_cidr is set to /32 when tinc_mode: router - this will be overridden
 tinc_vpn_cidr: "/24"
+tinc_netname: tinc-vpn
+tinc_control_plane_bind_ip: "{{ ansible_default_ipv4.address }}"
