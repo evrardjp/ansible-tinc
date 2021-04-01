@@ -2,6 +2,7 @@ Name = {{ inventory_hostname | replace('.','_') | replace('-','_') }}
 {% if tinc_address_family is defined %}
 AddressFamily = {{ tinc_address_family }}
 {% endif %}
+Mode = {{ tinc_mode }}
 Interface = {{ tinc_vpn_interface }}
 {% for host in groups['tinc_spine_nodes'] %}
 {% if inventory_hostname != hostvars[host]['inventory_hostname'] and inventory_hostname in groups['tinc_leaf_nodes'] %}
