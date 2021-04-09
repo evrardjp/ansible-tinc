@@ -9,41 +9,13 @@
     - tinc_install
     - install
 
-- name: create tinc systemd service file
-  template:
-    src: tinc.systemd.service.j2
-    dest: /etc/systemd/system/tinc.service
-  notify: Restart Service
-  when: ansible_service_mgr == "systemd"
-  tags:
-    - tinc_install
-    - install
 
-- name: OpenWRT Configure tinc with UCI
-  template:
-    src: openwrt-tinc-uci-config.j2
-    dest: /etc/config/tinc
-    owner: root
-    group: root
-    mode: 0644
-  when: ansible_os_family == "OpenWrt"
-  tags:
-    - uci
-  notify:
-    - Restart Service
 
 - name: ensure tinc netname directory exists
   file:
     path: "/etc/tinc/{{ tinc_netname }}/hosts"
     recurse: True
     state: directory
-
-- name: create /etc/tinc/nets.boot file from template
-  copy:
-    content: "{{ tinc_netname }}"
-    dest: /etc/tinc/nets.boot
-  notify:
-    - Restart Service
 
 - name: ensure tinc.conf contains connection to core nodes
   template:
@@ -159,7 +131,22 @@
     - tinc_internal_hosts
     - molecule-notest # https://github.com/ansible-community/molecule/issues/959
 
+- name: Enable tinc with UCI
+  template:
+    src: openwrt-tinc-uci-config.j2
+    dest: /etc/config/tinc
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_os_family == "OpenWrt"
+  tags:
+    - uci
+  notify:
+    - Restart Service
+  
 - name: ensure tinc is enabled
   service:
-    name: "{{ tinc_service_name }}"
+    name: "{{ tinc_service_name }}@{{ tinc_netname }}"
+    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
     enabled: yes
+  when:  ansible_os_family != "OpenWrt"
