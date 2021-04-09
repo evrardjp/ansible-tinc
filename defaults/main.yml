@@ -1,7 +1,6 @@
 ---
 # defaults file for tinc
 
-service_name: "{{ tinc_service_name }}"
 tinc_service_name: tinc
 # OpenWRT package manager does not support state: latest
 tinc_package_state: present
