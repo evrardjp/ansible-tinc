@@ -27,6 +27,7 @@ provisioner:
 platforms:
   # - name: tinc-centos-7
   #   image: centos-7
+  #   image: diodonfrost/ubuntu-18.04-ansible
   #   #pre_build_image: true
   #   privileged: true
   #   command: /sbin/init
@@ -46,10 +47,11 @@ platforms:
   #     - tinc_leaf_nodes
 
   - name: tinc-centos-7
-    image: centos:7
-    pre_build_image: true
+    image: centos-7
     privileged: true
     command: /sbin/init
+    volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro      
     etc_hosts:
       tinc-centos-7:  10.10.0.11
       tinc-centos-8:  10.10.0.12
@@ -61,10 +63,11 @@ platforms:
       - tinc_leaf_nodes
 
   - name: tinc-centos-8
-    image: centos:8
-    pre_build_image: true
+    image: centos-8
     privileged: true
     command: /sbin/init
+    volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro    
     etc_hosts:
       tinc-centos-7:  10.10.0.11
       tinc-centos-8:  10.10.0.12
@@ -75,71 +78,40 @@ platforms:
       - tinc_spine_nodes
       - tinc_leaf_nodes
 
-  # - name: tinc-centos-8
-  #   #image: docker.io/pycontribs/centos:8
-  #   image: centos-8
-  #   #pre_build_image: true
-  #   privileged: true
-  #   command: /sbin/init
-  #   tmpfs:
-  #     - /run
-  #     - /tmp
-  #   volumes:
-  #   - /sys/fs/cgroup:/sys/fs/cgroup:ro  
-  #   etc_hosts:
-  #     tinc-centos-7:  10.10.0.11
-  #     tinc-centos-8:  10.10.0.12
-  #     tinc-ubuntu-18: 10.10.0.14
-  #     tinc-ubuntu-20: 10.10.0.15
-  #   groups:
-  #     - tinc_nodes
-  #     - tinc_spine_nodes
-  #     - tinc_leaf_nodes
+  - name: tinc-ubuntu-18
+    image: ubuntu-18.04
+    privileged: true
+    command: /lib/systemd/systemd
+    volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro    
+    #command: /sbin/init
+    # tmpfs:
+    #   - /run
+    #   - /tmp
+    # volumes:
+    # - /sys/fs/cgroup:/sys/fs/cgroup:ro    
+    etc_hosts:
+      tinc-centos-7:  10.10.0.11
+      tinc-centos-8:  10.10.0.12
+      tinc-ubuntu-18: 10.10.0.14
+      tinc-ubuntu-20: 10.10.0.15
+    groups:
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes
 
-  # - name: tinc-ubuntu-18
-  #   #image: diodonfrost/ubuntu-18.04-ansible
-  #   image: ubuntu-18.04
-  #   #pre_build_image: true
-  #   privileged: true
-  #   command: /lib/systemd/systemd
-  #   volumes:
-  #   - /sys/fs/cgroup:/sys/fs/cgroup:ro    
-  #   #command: /sbin/init
-  #   # tmpfs:
-  #   #   - /run
-  #   #   - /tmp
-  #   # volumes:
-  #   # - /sys/fs/cgroup:/sys/fs/cgroup:ro    
-  #   etc_hosts:
-  #     tinc-centos-7:  10.10.0.11
-  #     tinc-centos-8:  10.10.0.12
-  #     tinc-ubuntu-18: 10.10.0.14
-  #     tinc-ubuntu-20: 10.10.0.15
-  #   groups:
-  #     - tinc_nodes
-  #     - tinc_spine_nodes
-  #     - tinc_leaf_nodes
-
-  # - name: tinc-ubuntu-20
-  #   #image: diodonfrost/ubuntu-20.04-ansible
-  #   image: ubuntu-20.04
-  #   #pre_build_image: true
-  #   privileged: true
-  #   #command: /sbin/init
-  #   command: /lib/systemd/systemd
-  #   volumes:
-  #   - /sys/fs/cgroup:/sys/fs/cgroup:ro    
-  #   # tmpfs:
-  #   #   - /run
-  #   #   - /tmp
-  #   # volumes:
-  #   # - /sys/fs/cgroup:/sys/fs/cgroup:ro
-  #   etc_hosts:
-  #     tinc-centos-7:  10.10.0.11
-  #     tinc-centos-8:  10.10.0.12
-  #     tinc-ubuntu-18: 10.10.0.14
-  #     tinc-ubuntu-20: 10.10.0.15
-  #   groups:
-  #     - tinc_nodes
-  #     - tinc_spine_nodes
-  #     - tinc_leaf_nodes
+  - name: tinc-ubuntu-20
+    image: ubuntu-20.04
+    privileged: true
+    command: /lib/systemd/systemd
+    volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    etc_hosts:
+      tinc-centos-7:  10.10.0.11
+      tinc-centos-8:  10.10.0.12
+      tinc-ubuntu-18: 10.10.0.14
+      tinc-ubuntu-20: 10.10.0.15
+    groups:
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes

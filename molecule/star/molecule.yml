@@ -1,8 +1,8 @@
 ---
-lint: |
-  set -e
-  yamllint .
-  ansible-lint -vv --exclude=.tox
+# lint: |
+#   set -e
+#   yamllint .
+#   ansible-lint -vv --exclude=.tox
 scenario:
   name: star
 dependency:
@@ -27,9 +27,7 @@ provisioner:
 
 platforms:
   - name: tinc-centos-7
-    #image: docker.io/pycontribs/centos:7
     image: centos-7
-    #pre_build_image: true
     privileged: true
     command: /sbin/init
     tmpfs:
@@ -48,9 +46,7 @@ platforms:
       - tinc_leaf_nodes
 
   - name: tinc-centos-8
-    #image: docker.io/pycontribs/centos:8
     image: centos-8
-    #pre_build_image: true
     privileged: true
     command: /sbin/init
     tmpfs:
@@ -68,9 +64,7 @@ platforms:
       - tinc_leaf_nodes
 
   - name: tinc-ubuntu-18
-    #image: diodonfrost/ubuntu-18.04-ansible
     image: ubuntu-18.04
-    #pre_build_image: true
     privileged: true
     tmpfs:
       - /run
@@ -87,9 +81,7 @@ platforms:
       - tinc_leaf_nodes
 
   - name: tinc-ubuntu-20
-    #image: diodonfrost/ubuntu-20.04-ansible
     image: ubuntu-20.04
-    #pre_build_image: true
     privileged: true
     tmpfs:
       - /run
