@@ -4,7 +4,7 @@
   yum:
     name: epel-release
     state: latest
-  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
+  when: (ansible_os_family == "RedHat")
   tags:
     - tinc_requirements
     - install
