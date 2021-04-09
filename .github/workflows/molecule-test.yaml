@@ -3,7 +3,7 @@ name: Molecule Test
 on: [push, pull_request]
 jobs:
   molecule:
-    name: "Invoking tox with ansible-version, topology"
+    name: "tox -e ansible-"
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
