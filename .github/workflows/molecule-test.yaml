@@ -1,0 +1,21 @@
+---
+name: Molecule Test
+on: [push, pull_request]
+jobs:
+  molecule:
+    name: "Invoking tox with ansible-version, topology"
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        ansible: ["2.9", "latest"]
+        topology: ["ring", "star"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt remove ansible
+          sudo apt install tox
+      - name: Test with molecule using tox
+        run: |
+          sudo -H -E tox -e ansible-${{ matrix.ansible }}-${{ matrix.topology }}
