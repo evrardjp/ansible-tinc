@@ -17,6 +17,13 @@ Requirements
 ------------
 
 * Ubuntu 18.04 / CentOS 7 (or above) / OpenWRT
+* On CentOS and above, EPEL repo needs to be configured in advance.
+
+To do so, you can run the following:
+```bash
+yum install epel-release || dnf install epel-release
+yum update || dnf update
+```
 
 Role Variables
 --------------

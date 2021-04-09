@@ -1,14 +1,5 @@
 ---
 # tasks file for tinc
-- name: install epel-release
-  yum:
-    name: epel-release
-    state: latest
-  when: (ansible_os_family == "RedHat")
-  tags:
-    - tinc_requirements
-    - install
-
 - name: refresh cache
   apt:
     update_cache: yes
