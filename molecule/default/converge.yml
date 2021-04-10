@@ -2,25 +2,21 @@
 - name: Converge
   hosts: all
   gather_facts: yes
-  tasks:
-
-  - name: Apt update and install rsync, ping, iproute
-    apt:
-      update_cache: yes
-      name:
+  vars:
+    packages:
+      debian:
         - rsync
         - inetutils-ping
         - iproute2
-      state: present
-    when: ansible_os_family == "Debian"
+      redhat:
+        - iproute
+  tasks:
 
-  - name: Yum install iproute to fix undefined ansible_default_ipv4.address
-    yum:
-      name: iproute
+  - name: Install base packages
+    package:
+      update_cache: "{{ ((ansible_os_family|lower) == 'debian') | ternary('yes', omit) }}"
+      name: "{{ packages[(ansible_os_family|lower)] }}"
       state: present
-    when:
-      - ansible_distribution == "CentOS"
-      - ansible_distribution_major_version == "7"
 
   - name: Re-collect network facts required after installation iproute
     setup:

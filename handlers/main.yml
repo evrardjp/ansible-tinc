@@ -1,18 +1,7 @@
 ---
 # handlers file for tinc
-
-#- name: Restart Service
-#  service:
-#    name: "{{ service_name }}"
-#    daemon_reload: "{{ ansible_service_mgr == 'systemd' | ternary('yes',omit) }}"
-#    state: restarted
-
-- name: Restart Service
-  systemd:
-   daemon_reload: yes
-  when: ansible_service_mgr == "systemd"
-
 - name: Restart Service
   service:
-    name: "{{ service_name }}"
+    name: "{{ tinc_service_name }}@{{ tinc_netname }}"
     state: restarted
+  when:  ansible_os_family != "OpenWrt"

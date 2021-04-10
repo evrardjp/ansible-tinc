@@ -1,7 +1,7 @@
 Tinc
 ====
 
-[![Build Status](https://travis-ci.org/evrardjp/ansible-tinc.svg?branch=master)](https://travis-ci.org/evrardjp/ansible-tinc)
+![Daily branch test status](https://github.com/evrardjp/ansible-tinc/actions/workflows/daily.yml/badge.svg)
 
 This role installs tinc in a star or a ring topology.
 
@@ -16,7 +16,14 @@ If all the [tinc_nodes] are part of the [tinc_spine_nodes], you have a more "rin
 Requirements
 ------------
 
-* Ubuntu 16.04 / CentOS 7 (or above) / OpenWRT
+* Ubuntu 18.04 / CentOS 7 (or above) / OpenWRT
+* On CentOS and above, EPEL repo needs to be configured in advance.
+
+To do so, you can run the following:
+```bash
+yum install epel-release || dnf install epel-release
+yum update || dnf update
+```
 
 Role Variables
 --------------
@@ -78,6 +85,7 @@ node1
 
 Testing
 -------
+
 Tests based on Ansible Molecule framework which doing next:
 - check role syntax
 - start several containers with different OS <i>(only for tests. We don't mix Tinc versions in production)</i>
@@ -85,12 +93,15 @@ Tests based on Ansible Molecule framework which doing next:
 - verify idempotency (make sure that second run will not make unexpected changes)
 - verify that each prepared node able to ping other nodes over VPN
 
-Tests run in a Travis. Additionally you may execute them on local machine.
+Tests run in a github actions. Additionally you may execute them on local machine.
 
 Dependencies you need to have installed for running the tests:
 - Ansible
 - [Docker](https://docs.docker.com/engine/install/)
-- [Molecule](https://molecule.readthedocs.io/en/latest/installation.html) with `molecule-docker` driver
+- [Molecule](https://molecule.readthedocs.io/en/latest/installation.html) with `molecule-docker` driver, or tox.
+
+Using molecule directly
+~~~~~~~~~~~~~~~~~~~~~~~
 
 How to run existing tests for star and ring topologies:
 ```bash
@@ -111,7 +122,29 @@ molecule verify # run tests described in molecule/default/verify.yml
 molecule destroy
 ```
 
-How to test role with new OS:
+Using tox
+~~~~~~~~~
+
+tox is a test runner for python. It will install all the necessary python dependencies (ansible, molecule[docker]) in a virtual environment.
+
+To run a test:
+
+```bash
+tox -e ansible-<version>-<tinc scenario>
+```
+
+See supported values for `version` in `tox.ini`.
+Current testable scenarios for tinc are `ring`, or `star`.
+Positional arguments will be passed to the `molecule test` command.
+
+For example, to run a test for ansible-2.9, with the ring topology and prevent molecule to destroy the environment:
+
+```bash
+tox -e ansible-2.9-ring -- --destroy=never
+```
+
+How to test role with new OS
+----------------------------
 
 add new image to [molecule/default/molecule.yml](molecule/default/molecule.yml) and [molecule/star/molecule.yml](molecule/star/molecule.yml) following existing examples. Files are similar except the variables `scenario.name` and `groups`. Next hightlights could be hepful:
 

@@ -1,0 +1,25 @@
+name: Daily jobs
+
+on:
+  schedule:
+  - cron: "30 1 * * *"
+
+jobs:
+  molecule:
+    name: "Test role"
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      fail-fast: false
+      matrix:
+        ansible: ["2.9", "latest"]
+        topology: ["ring"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          sudo apt remove ansible
+          sudo apt install tox
+      - name: Test with molecule using tox
+        run: |
+          sudo -H -E tox -e ansible-${{ matrix.ansible }}-${{ matrix.topology }}
