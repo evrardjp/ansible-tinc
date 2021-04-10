@@ -1,7 +1,7 @@
 Tinc
 ====
 
-[![Build Status](https://travis-ci.org/evrardjp/ansible-tinc.svg?branch=master)](https://travis-ci.org/evrardjp/ansible-tinc)
+![Daily branch test status](https://github.com/evrardjp/ansible-tinc/actions/workflows/daily.yml/badge.svg)
 
 This role installs tinc in a star or a ring topology.
 
