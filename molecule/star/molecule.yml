@@ -13,7 +13,7 @@ verifier:
   name: ansible
 provisioner:
   name: ansible
-  log: false
+  log: True
   inventory:
     host_vars:
       tinc-centos-7:
@@ -29,10 +29,7 @@ platforms:
   - name: tinc-centos-7
     image: centos-7
     privileged: true
-    command: /sbin/init
-    tmpfs:
-      - /run
-      - /tmp    
+    command: /sbin/init 
     volumes:
     - /sys/fs/cgroup:/sys/fs/cgroup:ro    
     etc_hosts:
@@ -49,9 +46,6 @@ platforms:
     image: centos-8
     privileged: true
     command: /sbin/init
-    tmpfs:
-      - /run
-      - /tmp    
     volumes:
     - /sys/fs/cgroup:/sys/fs/cgroup:ro    
     etc_hosts:
@@ -66,9 +60,7 @@ platforms:
   - name: tinc-ubuntu-18
     image: ubuntu-18.04
     privileged: true
-    tmpfs:
-      - /run
-      - /tmp    
+    command: /lib/systemd/systemd      
     volumes:
     - /sys/fs/cgroup:/sys/fs/cgroup:ro    
     etc_hosts:
@@ -83,9 +75,7 @@ platforms:
   - name: tinc-ubuntu-20
     image: ubuntu-20.04
     privileged: true
-    tmpfs:
-      - /run
-      - /tmp    
+    command: /lib/systemd/systemd 
     volumes:
     - /sys/fs/cgroup:/sys/fs/cgroup:ro    
     etc_hosts:
