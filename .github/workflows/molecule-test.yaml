@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         ansible: ["2.9", "latest"]
-        scenario: ["ring", "star", "openwrt"]
+        scenario: ["ring", "star", "openwrt", "switch"]
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies

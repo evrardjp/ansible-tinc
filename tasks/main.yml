@@ -62,10 +62,12 @@
   notify:
     - Restart Service
 
-- name: Check whether /etc/tinc/netname/hosts/inventory_hostname contains public key
+- name: "Check whether /etc/tinc/netname/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }} contains public key"
   lineinfile:
     dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     line: "-----END RSA PUBLIC KEY-----"
+    mode: "0600"
+    create: yes
   check_mode: yes
   register: contains_publickey_ending
 
@@ -81,14 +83,14 @@
 
 - name: Generate tinc keys and append public key to host file
   block:
-    - name: Create using tincd -K
+    - name:  Generate keys with tincd -K
       command: "tincd -n {{ tinc_netname }} -K{{ tinc_key_size }}"
       args:
         creates: "/etc/tinc/{{ tinc_netname }}/rsa_key.priv"
       notify:
         - Restart Service
   rescue:
-    - name: Create using tinc client
+    - name:  Generate keys with tinc client
       command:  "tinc -n {{ tinc_netname }} generate-keys {{ tinc_key_size }}"
       args:
         creates: "/etc/tinc/{{ tinc_netname }}/rsa_key.priv"
@@ -99,6 +101,11 @@
   slurp:
     src: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
   register: tinc_host_file
+
+# TODO: REMOVE
+- name: Show generated files for debugging purposes
+  debug:
+    msg: "{{ tinc_host_file['content'] | b64decode }}"
 
 - name: Upload all hosts files on each host
   copy:
