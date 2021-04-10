@@ -1,0 +1,18 @@
+- name: Converge
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Update pkg metadata
+    raw: opkg update #noqa no-changed-when
+
+  - name: Install python3
+    raw: opkg install python3 #noqa no-changed-when
+    
+  - name: Re-collect network facts required after installation of python
+    setup:
+      gather_subset: network
+
+  - name: Include ansible-tinc
+    include_role:
+      name: ansible-tinc

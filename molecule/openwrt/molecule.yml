@@ -1,0 +1,45 @@
+# lint: |
+#   set -e
+#   yamllint .
+#   ansible-lint -vv --exclude=.tox
+scenario:
+  name: openwrt # Tests openwrt in ring topology
+dependency:
+  name: galaxy
+driver:
+  name: docker
+verifier:
+  name: ansible
+provisioner:
+  name: ansible
+  log: True
+  options:
+    vvv: True
+  inventory:
+    host_vars:
+      tinc-openwrt-1:
+        tinc_vpn_ip: 10.10.0.11
+      tinc-openwrt-2:
+        tinc_vpn_ip: 10.10.0.12
+platforms:
+  - name: tinc-openwrt-1
+    image: openwrtorg/rootfs
+    pre_built_image: True
+    etc_hosts:
+      tinc-openwrt-1:  10.10.0.11
+      tinc-openwrt-2:  10.10.0.12
+    groups:
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes
+      
+  - name: tinc-openwrt-2
+    image: openwrtorg/rootfs
+    pre_built_image: True
+    etc_hosts:
+      tinc-openwrt-1:  10.10.0.11
+      tinc-openwrt-2:  10.10.0.12
+    groups:
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes      
