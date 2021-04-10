@@ -5,9 +5,13 @@
 
   - name: Update pkg metadata
     raw: opkg update #noqa no-changed-when
+    tags:
+      - skip_ansible_lint
 
   - name: Install python3
     raw: opkg install python3 #noqa no-changed-when
+    tags:
+      - skip_ansible_lint
     
   - name: Re-collect network facts required after installation of python
     setup:
