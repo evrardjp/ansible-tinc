@@ -1,8 +1,8 @@
 ---
-# lint: |
-#   set -e
-#   yamllint .
-#   ansible-lint -vv --exclude=.tox
+lint: |
+  set -e
+  yamllint .
+  ansible-lint -vv --exclude=.tox
 scenario:
   name: default # ring topology
 dependency:

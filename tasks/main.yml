@@ -19,6 +19,7 @@
   template:
     src: tinc.conf.j2
     dest: "/etc/tinc/{{ tinc_netname }}/tinc.conf"
+    mode: "0644"
   notify:
     - Restart Service
   tags: connection
@@ -39,13 +40,13 @@
   notify:
     - Restart Service
 
-
 - name: Ensure tinc hosts file binds to physical ip address
   lineinfile:
     dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     regexp: "^Address ="
     line: "Address = {{ tinc_control_plane_bind_ip }}"
     create: yes
+    mode: "0644"
   when: inventory_hostname in groups['tinc_spine_nodes']
   notify:
     - Restart Service
@@ -55,6 +56,7 @@
     dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     regexp: "^Subnet ="
     line: "Subnet = {{ tinc_vpn_ip }}/32"
+    mode: "0644"
     create: yes
   when: tinc_mode == 'router'
   notify:
@@ -73,6 +75,9 @@
     path: "/etc/tinc/{{ tinc_netname }}/rsa_key.priv"
     state: absent
   when: contains_publickey_ending.changed
+  tags:
+    #Ansible lint recommends this to be handler, but this would make the role more complex.
+    - skip_ansible_lint
 
 - name: Create tinc private key (and append public key to tincd hosts file)
   command: "tincd -n {{ tinc_netname }} -K{{ tinc_key_size }}"
