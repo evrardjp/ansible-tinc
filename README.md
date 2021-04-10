@@ -43,21 +43,13 @@ Please have a look in the task files.
 
 (Short) Inventory:
 ```
-[tinc_nodes]
+[tinc_nodes:children]
+tinc_spine_nodes
+
+[tinc_spine_nodes]
 node1 tinc_vpn_ip=10.10.0.11
 node2 tinc_vpn_ip=10.10.0.12
 node3 tinc_vpn_ip=10.10.0.13
-
-[tinc_spine_nodes]
-node1
-node2
-node3
-
-[tinc_nodes:vars]
-tinc_netname=mynetname
-tinc_vpn_cidr="/24"
-tinc_vpn_interface=tun0
-
 ```
 ### Router mode, star topology
 
@@ -77,7 +69,6 @@ Group vars for `tinc_nodes`:
 
 ```
 tinc_netname: mynetname
-tinc_vpn_cidr: "/24"
 tinc_vpn_interface: tun0
 ```
 
@@ -98,7 +89,6 @@ Host vars for edge node, `node3`:
 ```
 tinc_vpn_ip: 10.10.0.12
 ```
-
 
 ## Dependencies
 
