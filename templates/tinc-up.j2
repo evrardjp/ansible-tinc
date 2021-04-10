@@ -5,3 +5,7 @@ ip addr add {{ tinc_vpn_ip }}{{ tinc_vpn_cidr }} dev {{ tinc_vpn_interface }}
 {% if tinc_up_scripts is defined %}
 {{ tinc_up_scripts }}
 {% endif %}
+
+{% for route in tinc_vpn_routes %}
+ip route add {{ route.dest }} via {{ route.gateway }}
+{% endfor %}

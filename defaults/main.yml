@@ -15,3 +15,9 @@ tinc_vpn_interface: tun0
 tinc_vpn_cidr: "/24"
 tinc_netname: tinc-vpn
 tinc_control_plane_bind_ip: "{{ ansible_default_ipv4.address }}"
+
+# tinc_vpn_routes can add routes to flow through the VPN (and remove them on tinc down)
+tinc_vpn_routes: []
+#tinc_vpn_routes:
+#  - dest:
+#    gateway:
