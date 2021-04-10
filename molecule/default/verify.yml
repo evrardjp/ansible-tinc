@@ -8,3 +8,8 @@
     command: "ping -c 1 {{ item }}"
     with_items: "{{ ansible_play_batch }}"
     changed_when: false
+    register: ping_results
+
+  - name: Show ping results
+    debug:
+      var: ping_results

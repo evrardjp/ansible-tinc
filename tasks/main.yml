@@ -15,7 +15,7 @@
     recurse: True
     state: directory
 
-- name: Ensure tinc.conf contains connection to core nodes
+- name: Create base tinc.conf configuration
   template:
     src: tinc.conf.j2
     dest: "/etc/tinc/{{ tinc_netname }}/tinc.conf"
@@ -40,7 +40,7 @@
   notify:
     - Restart Service
 
-- name: Ensure tinc hosts file binds to physical ip address
+- name: Generate connection file for the other nodes
   lineinfile:
     dest: "/etc/tinc/{{ tinc_netname }}/hosts/{{ inventory_hostname | replace('.','_') | replace('-','_') }}"
     regexp: "^Address ="
