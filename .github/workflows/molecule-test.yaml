@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
+      fail-fast: false
       matrix:
         ansible: ["2.9", "latest"]
         topology: ["ring", "star"]
