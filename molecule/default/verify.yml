@@ -4,7 +4,7 @@
   gather_facts: no
   tasks:
 
-  - name: Ping other nodes over VPN
+  - name: Ping all nodes over VPN
     command: "ping -c 1 {{ item }}"
-    with_items: "{{ play_hosts }}"
-    when: item != inventory_hostname
+    with_items: "{{ ansible_play_batch }}"
+    changed_when: false
