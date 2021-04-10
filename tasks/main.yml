@@ -122,6 +122,6 @@
 - name: Ensure tinc is enabled
   service:
     name: "{{ tinc_service_name }}@{{ tinc_netname }}"
-    daemon_reload: "{{ (ansible_service_mgr == 'systemd') | ternary('yes', omit) }}"
+    daemon_reload: yes
     enabled: yes
   when:  ansible_os_family != "OpenWrt"
