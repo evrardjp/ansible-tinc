@@ -98,6 +98,8 @@
     mode: 0755
   loop: "{{ ansible_play_batch }}"
   when: item != inventory_hostname
+  notify:
+    - Restart Service
 
 - name: Add nodes to /etc/hosts
   lineinfile:
