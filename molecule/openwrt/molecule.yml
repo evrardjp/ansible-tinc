@@ -24,6 +24,7 @@ provisioner:
 platforms:
   - name: tinc-openwrt-1
     image: openwrtorg/rootfs
+    command: ""
     pre_built_image: True
     etc_hosts:
       tinc-openwrt-1:  10.10.0.11
@@ -35,6 +36,7 @@ platforms:
       
   - name: tinc-openwrt-2
     image: openwrtorg/rootfs
+    command: ""
     pre_built_image: True
     etc_hosts:
       tinc-openwrt-1:  10.10.0.11
