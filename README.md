@@ -45,11 +45,17 @@ Please have a look in the task files.
 ```
 [tinc_nodes:children]
 tinc_spine_nodes
+tinc_leaf_nodes
 
 [tinc_spine_nodes]
 node1 tinc_vpn_ip=10.10.0.11
 node2 tinc_vpn_ip=10.10.0.12
 node3 tinc_vpn_ip=10.10.0.13
+
+[tinc_leaf_nodes]
+node1
+node2
+node3
 ```
 ### Router mode, star topology
 
@@ -63,6 +69,11 @@ node3
 
 [tinc_spine_nodes]
 node1
+
+[tinc_leaf_nodes]
+node1
+node2
+node3
 ```
 
 Group vars for `tinc_nodes`:
