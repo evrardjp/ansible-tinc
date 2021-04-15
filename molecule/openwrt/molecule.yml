@@ -33,7 +33,7 @@ platforms:
       - tinc_nodes
       - tinc_spine_nodes
       - tinc_leaf_nodes
-      
+
   - name: tinc-openwrt-2
     image: openwrtorg/rootfs
     command: ""
@@ -44,4 +44,4 @@ platforms:
     groups:
       - tinc_nodes
       - tinc_spine_nodes
-      - tinc_leaf_nodes      
+      - tinc_leaf_nodes
