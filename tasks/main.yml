@@ -79,12 +79,21 @@
     #Ansible lint recommends this to be handler, but this would make the role more complex.
     - skip_ansible_lint
 
-- name: Create tinc private key (and append public key to tincd hosts file)
-  command: "tincd -n {{ tinc_netname }} -K{{ tinc_key_size }}"
-  args:
-    creates: "/etc/tinc/{{ tinc_netname }}/rsa_key.priv"
-  notify:
-    - Restart Service
+- name: Generate tinc keys and append public key to host file
+  block:
+    - name: Create using tincd -K
+      command: "tincd -n {{ tinc_netname }} -K{{ tinc_key_size }}"
+      args:
+        creates: "/etc/tinc/{{ tinc_netname }}/rsa_key.priv"
+      notify:
+        - Restart Service
+  rescue:
+    - name: Create using tinc client
+      command:  "tinc -n {{ tinc_netname }} generate-keys {{ tinc_key_size }}"
+      args:
+        creates: "/etc/tinc/{{ tinc_netname }}/rsa_key.priv"
+      notify:
+        - Restart Service
 
 - name: Get tinc hosts file after key creation
   slurp:
@@ -125,7 +134,7 @@
     - uci
   notify:
     - Restart Service
-  
+
 - name: Ensure tinc is enabled
   service:
     name: "{{ tinc_service_name }}@{{ tinc_netname }}"
