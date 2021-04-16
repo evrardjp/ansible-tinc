@@ -8,8 +8,18 @@
     command: "ping -c 1 {{ item }}"
     with_items: "{{ ansible_play_batch }}"
     changed_when: false
-    register: ping_results
+    register: _ping
 
-  - name: Show ping results
+  - name: Show ping info
     debug:
-      var: ping_results
+      var: _ping
+
+  - name: Show vpn hosts data
+    command: "cat /etc/tinc/{{ tinc_netname }}/hosts/*"
+    changed_when: false
+    register: _hosts
+
+  - name: Debug hostfiles
+    debug:
+      var: _hosts
+

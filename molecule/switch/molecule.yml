@@ -1,0 +1,62 @@
+---
+lint: |
+  set -e
+  yamllint .
+  ansible-lint -vv --exclude=.tox
+scenario:
+  name: switch
+dependency:
+  name: galaxy
+driver:
+  name: docker
+verifier:
+  name: ansible
+provisioner:
+  name: ansible
+  log: True
+  options:
+    vvv: True
+  inventory:
+    group_vars:
+      tinc_nodes:
+        tinc_mode: switch
+    host_vars:
+      tinc-switch-1:
+        tinc_vpn_ip: 10.10.0.15
+      tinc-switch-2:
+        tinc_vpn_ip: 10.10.0.15
+      tinc-switch-3:
+        tinc_vpn_ip: 10.10.0.15
+platforms:
+  - name: tinc-switch-1
+    image: ubuntu-20.04
+    privileged: true
+    command: /lib/systemd/systemd
+    volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    etc_hosts: &etchosts
+      tinc-switch-1:  10.10.0.11
+      tinc-switch-2:  10.10.0.12
+      tinc-switch-3:  10.10.0.13
+    groups: &tincgroups
+      - tinc_nodes
+      - tinc_spine_nodes
+      - tinc_leaf_nodes
+
+  - name: tinc-switch-2
+    image: ubuntu-20.04
+    privileged: true
+    command: /lib/systemd/systemd
+    volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    etc_hosts: *etchosts
+    groups: *tincgroups
+
+  - name: tinc-switch-3
+    image: ubuntu-20.04
+    privileged: true
+    command: /lib/systemd/systemd
+    volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    etc_hosts: *etchosts
+    groups: *tincgroups
